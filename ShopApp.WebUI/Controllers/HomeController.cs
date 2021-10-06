@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ShopApp.WebUI.Data;
+using ShopApp.WebUI.Models;
+using ShopApp.WebUI.ViewModels;
 
 namespace ShopApp.WebUI.Controllers
 {
@@ -10,7 +13,14 @@ namespace ShopApp.WebUI.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            
+
+            var productViewModel = new ProductViewModel()
+            {
+                Products = ProductRepository.Products
+            };
+
+            return View(productViewModel);
         } 
         public IActionResult About()
         {
