@@ -74,5 +74,11 @@ namespace ShopApp.WebUI.Controllers
             ProductRepository.EditProduct(p);
             return RedirectToAction("list");
         }
+        [HttpPost]
+        public IActionResult Delete(int ProductId)
+        {
+            ProductRepository.DeleteProduct(ProductId);
+            return RedirectToAction("list");
+        }
     }
 }
