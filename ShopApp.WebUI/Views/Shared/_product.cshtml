@@ -3,7 +3,8 @@
     <img class="card-img-top" src="~/images/@Model.ImageUrl" alt="@Model.Name">
     <div class="card-body">
         <h5 class="card-title ">@Model.Name</h5>
-    </div>
     <p class="card-text text-muted px-3">@Model.Price</p>
-    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-primary">Details</a>
+    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-primary btn-sm">Details</a>
+    <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-warning btn-sm">Edit</a>
+    </div>
 </div>
