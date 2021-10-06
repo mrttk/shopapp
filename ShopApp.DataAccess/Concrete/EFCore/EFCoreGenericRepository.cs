@@ -13,7 +13,7 @@ namespace ShopApp.DataAccess.Concrete.EFCore
             throw new System.NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(TEntity entity)
         {
             throw new System.NotImplementedException();
         }

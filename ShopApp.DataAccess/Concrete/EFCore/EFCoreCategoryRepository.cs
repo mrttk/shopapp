@@ -13,7 +13,7 @@ namespace ShopApp.DataAccess.Concrete.EFCore
             _db.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Category entity)
         {
             throw new System.NotImplementedException();
         }
