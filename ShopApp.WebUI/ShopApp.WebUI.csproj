@@ -12,6 +12,7 @@
   </ItemGroup>
    <ItemGroup>
     <ProjectReference Include="..\ShopApp.DataAccess\ShopApp.DataAccess.csproj" />
+    <ProjectReference Include="..\ShopApp.Entity\ShopApp.Entity.csproj" />
   </ItemGroup>
 
 </Project>
