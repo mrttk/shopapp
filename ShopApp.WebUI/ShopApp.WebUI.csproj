@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ShopApp.DataAccess\ShopApp.DataAccess.csproj"/>
     <ProjectReference Include="..\ShopApp.Entity\ShopApp.Entity.csproj"/>
+    <ProjectReference Include="..\ShopApp.Business\ShopApp.Business.csproj"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10"/>
   </ItemGroup>
 </Project>
