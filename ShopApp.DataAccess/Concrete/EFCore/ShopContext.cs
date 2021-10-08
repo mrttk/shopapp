@@ -12,5 +12,11 @@ namespace ShopApp.DataAccess.Concrete.EFCore
         {
             optionsBuilder.UseSqlite("Data Source=shopDb");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProductCategory>()
+            .HasKey(c=> new {c.CategoryId, c.ProductId});
+        }
     }
 }
