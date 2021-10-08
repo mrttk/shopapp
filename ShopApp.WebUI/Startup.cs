@@ -37,8 +37,10 @@ namespace ShopApp.WebUI
                     Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
                     RequestPath="/modules"
             });
+            
             if (env.IsDevelopment())
             {
+                SeedDatabase.Seed();
                 app.UseDeveloperExceptionPage();
             }
 
