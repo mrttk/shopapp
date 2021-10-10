@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using ShopApp.Business.Abstract;
+using ShopApp.Business.Concrete;
 using ShopApp.DataAccess.Abstract;
 using ShopApp.DataAccess.Concrete.EFCore;
 
@@ -22,6 +24,7 @@ namespace ShopApp.WebUI
         {
             services.AddControllersWithViews();
             services.AddScoped<IProductRepository, EFCoreProductRepository>();
+            services.AddScoped<IProductService, ProductManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
