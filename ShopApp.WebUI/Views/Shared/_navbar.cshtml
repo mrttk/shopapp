@@ -1,11 +1,21 @@
     <div class="navbar bg-danger navbar-dark navbar-expand-sm">
         <div class="container">
-            <ul class="navbar-nav">
+            <a href="/" class="navbar-brand">Shop App</a>
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="/Product/List" class="nav-link">Products</a>
+                    <a asp-controller = "Shop" asp-action="List" class="nav-link">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/Product/Create" class="nav-link">Add Product</a>
+                    <a href="" class="nav-link">Cart</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="admin" asp-action="addproduct" class="nav-link">Add Product</a>
+                </li> 
+                <li class="nav-item">
+                    <a asp-controller="admin" asp-action="productlist" class="nav-link">Admin Products</a>
                 </li> 
             </ul>
             <form action="product/list" class="form-inline">
