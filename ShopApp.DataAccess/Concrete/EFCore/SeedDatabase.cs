@@ -19,6 +19,7 @@ namespace ShopApp.DataAccess.Concrete.EFCore
                 if (context.Products.Count() == 0)
                 {
                     context.Products.AddRange(Products);
+                    context.AddRange(ProductCategories);
                 }
                 context.SaveChanges();
             }
@@ -34,6 +35,15 @@ namespace ShopApp.DataAccess.Concrete.EFCore
             new Product() { Name = "IPhone 7", Price = 3000, ImageUrl = "2.jpg", Description = "Good Phone", IsApproved = true },
             new Product() { Name = "IPhone 8", Price = 4000, ImageUrl = "3.jpg", Description = "Good Phone", IsApproved = false },
             new Product() { Name = "IPhone 9", Price = 5000, ImageUrl = "1.jpg", Description = "Better Phone", IsApproved = true }
+        };
+
+        private static ProductCategory[] ProductCategories = {
+            new ProductCategory(){ Product = Products[0], Category = Categories[0]},
+            new ProductCategory(){ Product = Products[0], Category = Categories[2]},
+            new ProductCategory(){ Product = Products[1], Category = Categories[0]},
+            new ProductCategory(){ Product = Products[1], Category = Categories[2]},
+            new ProductCategory(){ Product = Products[2], Category = Categories[0]},
+            new ProductCategory(){ Product = Products[2], Category = Categories[2]}
         };
     }
 }
