@@ -13,6 +13,11 @@
     @await Html.PartialAsync("_header")
 }
 
+@section Categories
+{
+    @await Component.InvokeAsync("Categories")
+}
+
 @if (Model.Products.Count == 0)
 {
     @await Html.PartialAsync("_noproduct")
@@ -22,7 +27,7 @@ else
     <div class="row">
         @foreach (var product in @Model.Products)
         {
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @await Html.PartialAsync("_product", product)
             </div>
         }
