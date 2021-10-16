@@ -8,24 +8,40 @@ namespace ShopApp.DataAccess.Concrete.EFCore
 {
     public class EFCoreProductRepository : EFCoreGenericRepository<Product, ShopContext>, IProductRepository
     {
+        public int GetCountByCategory(string category)
+        {
+            using (var context = new ShopContext())
+            {
+                var products = context.Products.AsQueryable();
+                if (!string.IsNullOrEmpty(category))
+                {
+                    products = products
+                                    .Include(i=>i.ProductCategories)
+                                    .ThenInclude(i=>i.Category)
+                                    .Where(i=>i.ProductCategories.Any(a=>a.Category.Url.ToLower() == category.ToLower()));
+                }
+                return products.Count();
+            }
+        }
+
         public List<Product> GetPopularProducts()
         {
             throw new System.NotImplementedException();
         }
 
-        public Product GetProductDetails(int id)
+        public Product GetProductDetails(string url)
         {
             using (var context = new ShopContext())
             {
                  return context.Products
-                                .Where(i=> i.ProductId == id)
+                                .Where(i=> i.Url == url)
                                 .Include(i=> i.ProductCategories)
                                 .ThenInclude(i=> i.Category)
                                 .FirstOrDefault();
             }
         }
 
-        public List<Product> GetProductsByCategory(string name)
+        public List<Product> GetProductsByCategory(string name, int page, int pageSize)
         {
             using (var context = new ShopContext())
             {
@@ -36,9 +52,9 @@ namespace ShopApp.DataAccess.Concrete.EFCore
                     products = products
                                         .Include(i=>i.ProductCategories)
                                         .ThenInclude(i=>i.Category)
-                                        .Where(i=>i.ProductCategories.Any(a=>a.Category.Name.ToLower() == name.ToLower()));
+                                        .Where(i=>i.ProductCategories.Any(a=>a.Category.Url.ToLower() == name.ToLower()));
                 }
-                return products.ToList();
+                return products.Skip((page-1)*pageSize).Take(pageSize).ToList();
             }
         }
     }

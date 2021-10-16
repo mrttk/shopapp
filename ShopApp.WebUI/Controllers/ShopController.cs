@@ -16,22 +16,29 @@ namespace ShopApp.WebUI.Controllers
             this._productService = productService;
         }
 
-        public IActionResult List(string category)
+        public IActionResult List(string category, int page = 1)
         {
+            const int pageSize = 1;
             var productListViewModel = new ProductListViewModel()
             {
-                Products = _productService.GetProductsByCategory(category)
+                PageInfo = new PageInfo(){
+                   TotalItems = _productService.GetCountByCategory(category),
+                   CurrentPage = page,
+                   CurrentCategory = category,
+                   ItemsPerPage = pageSize
+                },
+                Products = _productService.GetProductsByCategory(category, page , pageSize)
             };
             return View(productListViewModel);
         }
 
-        public IActionResult Details(int? id)
+        public IActionResult Details(string url)
         {
-            if (id == null)
+            if (url == null)
             {
                 return NotFound();
             }
-            Product product = _productService.GetProductDetails((int)id);
+            Product product = _productService.GetProductDetails(url);
 
             if (product == null)
             {

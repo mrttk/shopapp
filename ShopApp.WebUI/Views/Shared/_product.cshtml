@@ -6,7 +6,7 @@
         <small class="text-muted"></small>
         <i class="fas fa-dolar-sign"></i>@Model.Price
         <div class="card-footer text-center">
-                <a asp-controller="shop" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-primary btn-sm mr-2">Details</a>
+                <a asp-controller="shop" asp-action="Details" asp-route-url="@Model.Url" class="btn btn-primary btn-sm mr-2">Details</a>
                 <a asp-controller="shop" asp-action="addtocart" asp-route-id="@Model.ProductId" class="btn btn-primary btn-sm mr-2">Add to Cart</a>
         </div>
     </div>
