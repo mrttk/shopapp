@@ -12,7 +12,7 @@ namespace ShopApp.DataAccess.Concrete.EFCore
         {
             using (var context = new ShopContext())
             {
-                var products = context.Products.AsQueryable();
+                var products = context.Products.Where(i=>i.IsApproved).AsQueryable();
                 if (!string.IsNullOrEmpty(category))
                 {
                     products = products
@@ -24,9 +24,12 @@ namespace ShopApp.DataAccess.Concrete.EFCore
             }
         }
 
-        public List<Product> GetPopularProducts()
+        public List<Product> GetHomePageProducts()
         {
-            throw new System.NotImplementedException();
+            using (var context = new ShopContext())
+            {
+                return context.Products.Where(i=>i.IsHome && i.IsApproved).ToList();
+            }
         }
 
         public Product GetProductDetails(string url)
@@ -45,7 +48,7 @@ namespace ShopApp.DataAccess.Concrete.EFCore
         {
             using (var context = new ShopContext())
             {
-                var products = context.Products.AsQueryable();
+                var products = context.Products.Where(i=>i.IsApproved).AsQueryable();
 
                 if (!string.IsNullOrEmpty(name))
                 {
