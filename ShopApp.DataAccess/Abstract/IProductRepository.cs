@@ -5,6 +5,10 @@ namespace ShopApp.DataAccess.Abstract
 {
     public interface IProductRepository : IRepository<Product>
     {
-        List<Product> GetPopularProducts();
+        Product GetProductDetails(string url);
+        List<Product> GetHomePageProducts();
+        List<Product> GetSearchResult(string searhString);
+        List<Product> GetProductsByCategory(string name, int page, int pageSize);
+        int GetCountByCategory(string category);
     }
 }

@@ -23,8 +23,12 @@ namespace ShopApp.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            
             services.AddScoped<IProductRepository, EFCoreProductRepository>();
+            services.AddScoped<ICategoryRepository, EFCoreCategoryRepository>();
+
             services.AddScoped<IProductService, ProductManager>();
+            services.AddScoped<ICategoryService, CategoryManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +52,21 @@ namespace ShopApp.WebUI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name:"search",
+                    pattern:"search",
+                    defaults: new {controller="Shop", action="Search"}
+                );
+                endpoints.MapControllerRoute(
+                    name:"productdetails",
+                    pattern:"{url}",
+                    defaults: new {controller="Shop", action="Details"}
+                );
+                endpoints.MapControllerRoute(
+                    name:"products",
+                    pattern:"products/{category?}",
+                    defaults: new {controller="Shop", action="List"}
+                );
                 endpoints.MapControllerRoute(
                     name:"default",
                     pattern:"{controller=Home}/{action=Index}/{id?}"
