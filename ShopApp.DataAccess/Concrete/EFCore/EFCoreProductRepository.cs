@@ -60,5 +60,17 @@ namespace ShopApp.DataAccess.Concrete.EFCore
                 return products.Skip((page-1)*pageSize).Take(pageSize).ToList();
             }
         }
+
+        public List<Product> GetSearchResult(string searhString)
+        {
+            using (var context = new ShopContext())
+            {
+                var products = context
+                                    .Products
+                                    .Where(i=>i.IsApproved && (i.Name.ToLower().Contains(searhString.ToLower()) || i.Description.ToLower().Contains(searhString.ToLower()))).AsQueryable();
+                                    
+                return products.ToList();
+            }
+        }
     }
 }

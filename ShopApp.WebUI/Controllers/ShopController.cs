@@ -50,5 +50,15 @@ namespace ShopApp.WebUI.Controllers
             });
         }
 
+        public IActionResult Search(string q)
+        {
+           var productListViewModel = new ProductListViewModel()
+            {
+                Products = _productService.GetSearchResult(q)
+            };
+
+            return View(productListViewModel);
+        }
+
     }
 }

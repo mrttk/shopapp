@@ -1,5 +1,4 @@
-@model ShopApp.WebUI.ViewModels.ProductListViewModel
-
+@model ShopApp.WebUI.ViewModels.ProductListViewModel;
 
 @* @section MessageBox
 {
@@ -8,18 +7,11 @@
     </div>
 } *@
 
-@section Header
-{
-    @await Html.PartialAsync("_header")
-}
-
 @section Categories
 {
     @await Component.InvokeAsync("Categories")
     @await Html.PartialAsync("_search")
 }
-
-
 
 @if (Model.Products.Count == 0)
 {
