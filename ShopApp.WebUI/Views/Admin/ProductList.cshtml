@@ -43,7 +43,10 @@
                     </td>
                     <td class="col-md-2">
                         <a href="/admin/products/@item.ProductId" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="" class="btn btn-danger btn-sm mr-2">Delete</a>
+                        <form action="/admin/delete" method="post" class="d-inline">
+                            <input type="hidden" name="ProductId" value="@item.ProductId">
+                            <button type="submit" class="btn btn-danger btn-sm mr-2">Delete</button>
+                        </form>
                     </td>
                 </tr>
             }
