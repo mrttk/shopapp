@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="stylesheet" href="/modules/bootstrap/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/style.css">
     <title>Shop App</title>
 </head>
 <body>
-    @RenderSection("MessageBox", false)
     @await Html.PartialAsync("_navbar")
     @RenderSection("Header", false)
     <main>
-        <div class="container py-3">
+        <div class="container py-3">            
+            @if (TempData["message"]!=null)
+            {
+                var info = JsonConvert.DeserializeObject<AlertMessage>(TempData["message"] as String);
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-@info.AlertType">
+                            @info.Message
+                        </div>
+                    </div>
+                </div>
+            }
+
             @if (IsSectionDefined("Categories"))
             {
                 <div class="row">

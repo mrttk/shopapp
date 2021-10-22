@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ShopApp.Business.Abstract;
 using ShopApp.DataAccess.Abstract;
-using ShopApp.WebUI.ViewModels;
+using ShopApp.WebUI.Models;
 
 namespace ShopApp.WebUI.Controllers
 {

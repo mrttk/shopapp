@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShopApp.Entity;
 
-namespace ShopApp.WebUI.ViewModels
+namespace ShopApp.WebUI.Models
 {
     public class ProductListViewModel
     {

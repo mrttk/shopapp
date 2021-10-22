@@ -1,0 +1,60 @@
+@model ProductListViewModel
+
+<h1 class="h3">Admin Products</h1>
+<hr>
+<a href="/admin/products/productcreate" class="btn btn-primary btn-sm">Add Product</a>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Image</td>
+            <td>Name</td>
+            <td>Price</td>
+            <td>IsHome</td>
+            <td>IsApproved?</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Products.Count>0)
+        {
+            @foreach (var item in Model.Products)
+            {
+                <tr>
+                    <td class="col-md-1">@item.ProductId</td>
+                    <td class="col-md-2"><img src="~/images/@item.ImageUrl" width="80" ></td>
+                    <td class="col-md-4">@item.Name</td>
+                    <td class="col-md-1">@item.Price</td>
+                    <td class="col-md-1">
+                        @if (item.IsHome)
+                        {
+                            <i class="fas fa-check"></i>
+                        }else
+                        {
+                            <i class="fas fa-times"></i>
+                        }
+                    </td>
+                    <td class="col-md-1">
+                        @if (item.IsApproved)
+                        {
+                            <i class="fas fa-check"></i>
+                        }else
+                        {
+                            <i class="fas fa-times"></i>
+                        }
+                    </td>
+                    <td class="col-md-2">
+                        <a href="/admin/products/@item.ProductId" class="btn btn-primary btn-sm">Edit</a>
+                        <form action="/admin/productdelete" method="post" class="d-inline">
+                            <input type="hidden" name="ProductId" value="@item.ProductId">
+                            <button type="submit" class="btn btn-danger btn-sm mr-2">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }else
+        {
+            <div class="alert alert-waring">No Products!</div>
+        }
+    </tbody>
+</table>
