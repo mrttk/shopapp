@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using ShopApp.Entity;
+
 namespace ShopApp.WebUI.Models
 {
     public class CategoryModel
@@ -5,5 +8,6 @@ namespace ShopApp.WebUI.Models
         public int CategoryId { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
+        public List<Product> Products { get; set; }
     }
 }
