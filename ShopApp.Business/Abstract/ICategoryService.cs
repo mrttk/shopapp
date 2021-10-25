@@ -8,6 +8,7 @@ namespace ShopApp.Business.Abstract
         Category GetById(int id);
         List<Category> GetAll();
         Category GetByIdWithProducts(int categoryId);
+        void DeleteFromCategory(int productId,int categoryId);
         void Create(Category entity);
         void Update(Category entity);
         void Delete(Category entity);
