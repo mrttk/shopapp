@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ShopApp.WebUI.Models
 {
     public class ProductModel
@@ -9,5 +11,6 @@ namespace ShopApp.WebUI.Models
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public bool IsApproved { get; set; }
+        public List<Entity.Category> SelectedCategories { get; set; }
     }
 }

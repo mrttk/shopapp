@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -72,7 +73,7 @@ namespace ShopApp.WebUI.Controllers
                 return NotFound();
             }
 
-            var entity = _productService.GetById((int)id);
+            var entity = _productService.GetByIdWithCategories((int)id);
 
             if (entity == null)
             {
@@ -85,13 +86,16 @@ namespace ShopApp.WebUI.Controllers
                 Url = entity.Url,
                 Price = entity.Price,
                 ImageUrl = entity.ImageUrl,
-                Description = entity.Description
+                Description = entity.Description,
+                SelectedCategories = entity.ProductCategories.Select(i=>i.Category).ToList()
             };
+
+            ViewBag.Categories = _categoryService.GetAll();
             return View(model);
         }
         
         [HttpPost]
-        public IActionResult ProductEdit(ProductModel model)
+        public IActionResult ProductEdit(ProductModel model, int[] categoryIds)
         {
             var entity = _productService.GetById(model.ProductId);
             if (entity == null)
@@ -104,7 +108,12 @@ namespace ShopApp.WebUI.Controllers
             entity.Description = model.Description;
             entity.ImageUrl = model.ImageUrl;
 
-            _productService.Update(entity);
+            foreach (var item in categoryIds)
+            {
+                Console.WriteLine(item);
+            }
+
+            _productService.Update(entity, categoryIds);
             
             var info = new AlertMessage(){
                 Message = $"{entity.Name} updated!",
