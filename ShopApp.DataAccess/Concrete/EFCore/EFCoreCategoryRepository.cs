@@ -12,7 +12,7 @@ namespace ShopApp.DataAccess.Concrete.EFCore
         {
             using (var context = new ShopContext())
             {
-                var cmd = "delete from productcategories where productId=@p0 and categoryId=@p1";
+                var cmd = "delete from productcategory where productId=@p0 and categoryId=@p1";
                 context.Database.ExecuteSqlRaw(cmd,productId,categoryId);
             }
             
