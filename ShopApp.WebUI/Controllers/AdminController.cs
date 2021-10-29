@@ -43,6 +43,8 @@ namespace ShopApp.WebUI.Controllers
         [HttpPost]
         public IActionResult ProductCreate(ProductModel model)
         {
+            if (ModelState.IsValid)
+            {
             var entity = new Product(){
                 Name = model.Name,
                 Url = model.Url,
@@ -62,6 +64,10 @@ namespace ShopApp.WebUI.Controllers
             TempData["message"] = JsonConvert.SerializeObject(info);
             
             return RedirectToAction("ProductList");
+                
+            }
+
+            return View(model);
         }
         
 
@@ -97,32 +103,37 @@ namespace ShopApp.WebUI.Controllers
         [HttpPost]
         public IActionResult ProductEdit(ProductModel model, int[] categoryIds)
         {
-            var entity = _productService.GetById(model.ProductId);
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _productService.GetById(model.ProductId);
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                entity.Name = model.Name;
+                entity.Url = model.Url;
+                entity.Price = (double)model.Price;
+                entity.Description = model.Description;
+                entity.ImageUrl = model.ImageUrl;
+
+                foreach (var item in categoryIds)
+                {
+                    Console.WriteLine(item);
+                }
+
+                _productService.Update(entity, categoryIds);
+                
+                var info = new AlertMessage(){
+                    Message = $"{entity.Name} updated!",
+                    AlertType = "success"
+                };
+
+                TempData["message"] = JsonConvert.SerializeObject(info);
+
+                return RedirectToAction("ProductList");
             }
-            entity.Name = model.Name;
-            entity.Url = model.Url;
-            entity.Price = (double)model.Price;
-            entity.Description = model.Description;
-            entity.ImageUrl = model.ImageUrl;
-
-            foreach (var item in categoryIds)
-            {
-                Console.WriteLine(item);
-            }
-
-            _productService.Update(entity, categoryIds);
-            
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} updated!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-
-            return RedirectToAction("ProductList");
+            ViewBag.Categories = _categoryService.GetAll();
+            return View(model);
         }
 
         public IActionResult ProductDelete(int productId)
@@ -153,21 +164,25 @@ namespace ShopApp.WebUI.Controllers
         [HttpPost]
         public IActionResult CategoryCreate(CategoryModel model)
         {
-            var entity = new Category(){
-                Name = model.Name,
-                Url = model.Url
-            };
+            if (ModelState.IsValid)
+            {                
+                var entity = new Category(){
+                    Name = model.Name,
+                    Url = model.Url
+                };
 
-            _categoryService.Create(entity);
+                _categoryService.Create(entity);
 
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} added!",
-                AlertType = "success"
-            };
+                var info = new AlertMessage(){
+                    Message = $"{entity.Name} added!",
+                    AlertType = "success"
+                };
 
-            TempData["message"] = JsonConvert.SerializeObject(info);
-            
-            return RedirectToAction("CategoryList");
+                TempData["message"] = JsonConvert.SerializeObject(info);
+                
+                return RedirectToAction("CategoryList");
+            }
+            return View(model);
         }
         
 
@@ -198,24 +213,28 @@ namespace ShopApp.WebUI.Controllers
         [HttpPost]
         public IActionResult CategoryEdit(CategoryModel model)
         {
-            var entity = _categoryService.GetById(model.CategoryId);
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _categoryService.GetById(model.CategoryId);
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                entity.Name = model.Name;
+                entity.Url = model.Url;
+
+                _categoryService.Update(entity);
+                
+                var info = new AlertMessage(){
+                    Message = $"{entity.Name} updated!",
+                    AlertType = "success"
+                };
+
+                TempData["message"] = JsonConvert.SerializeObject(info);
+
+                return RedirectToAction("CategoryList");                
             }
-            entity.Name = model.Name;
-            entity.Url = model.Url;
-
-            _categoryService.Update(entity);
-            
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} updated!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-
-            return RedirectToAction("CategoryList");
+            return View(model);
         }
 
         public IActionResult DeleteCategory(int categoryId)
