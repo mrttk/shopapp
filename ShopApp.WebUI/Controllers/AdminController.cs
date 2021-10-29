@@ -93,6 +93,8 @@ namespace ShopApp.WebUI.Controllers
                 Price = entity.Price,
                 ImageUrl = entity.ImageUrl,
                 Description = entity.Description,
+                IsApproved = entity.IsApproved,
+                IsHome = entity.IsHome,
                 SelectedCategories = entity.ProductCategories.Select(i=>i.Category).ToList()
             };
 
@@ -115,11 +117,8 @@ namespace ShopApp.WebUI.Controllers
                 entity.Price = (double)model.Price;
                 entity.Description = model.Description;
                 entity.ImageUrl = model.ImageUrl;
-
-                foreach (var item in categoryIds)
-                {
-                    Console.WriteLine(item);
-                }
+                entity.IsApproved = model.IsApproved;
+                entity.IsHome = model.IsHome;
 
                 _productService.Update(entity, categoryIds);
                 

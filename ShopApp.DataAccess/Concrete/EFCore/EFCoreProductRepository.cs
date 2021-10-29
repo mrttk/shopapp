@@ -99,6 +99,8 @@ namespace ShopApp.DataAccess.Concrete.EFCore
                     product.Url = entity.Url;
                     product.Description = entity.Description;
                     product.ImageUrl = entity.ImageUrl;
+                    product.IsApproved = entity.IsApproved;
+                    product.IsHome = entity.IsHome;
 
                     product.ProductCategories = categoryIds.Select(cId=>new ProductCategory()
                     {
