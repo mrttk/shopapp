@@ -12,9 +12,15 @@ namespace ShopApp.Business.Concrete
         {
             this._productRepository = productRepository;
         }
-        public void Create(Product entity)
+
+        public bool Create(Product entity)
         {
-            _productRepository.Create(entity);
+            if (Validation(entity))
+            {
+                _productRepository.Create(entity);
+                return true;                
+            }
+            return false;
         }
 
         public void Delete(Product entity)
@@ -67,9 +73,52 @@ namespace ShopApp.Business.Concrete
             _productRepository.Update(entity);
         }
 
-        public void Update(Product entity, int[] categoryIds)
+        public bool Update(Product entity, int[] categoryIds)
         {
-            _productRepository.Update(entity,categoryIds);
+            if (Validation(entity))
+            {
+                _productRepository.Update(entity,categoryIds);
+                return true;
+            }
+            return false;
+        }
+
+        public string ErrorMessage { get; set; }
+        public bool Validation(Product entity)
+        {
+            var isValid = true;
+
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                ErrorMessage += "Product name is required.\n";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(entity.Url))
+            {
+                ErrorMessage += "Product url is required.\n";
+                isValid = false;
+            }
+
+            if (entity.Price < 1 || entity.Price > 100000) 
+            {
+                ErrorMessage += "Product price must be between 1 and 100000.\n";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(entity.Description) || entity.Description.Length < 5 || entity.Description.Length > 500)
+            {
+            ErrorMessage += "The description must be a string with a minimum length of 5 and a maximum length of 500.\n";
+            isValid = false;
+            }
+
+            if (!entity.IsApproved && entity.IsHome)
+            {
+                ErrorMessage += "The product must be approved to add it to the homepage.\n";
+                isValid = false;
+            }
+
+            return isValid;
         }
     }
 }

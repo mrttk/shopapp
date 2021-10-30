@@ -36,7 +36,6 @@ namespace ShopApp.WebUI.Controllers
         [HttpGet]
         public IActionResult ProductCreate()
         {
-
             return View();
         }
 
@@ -45,28 +44,23 @@ namespace ShopApp.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-            var entity = new Product(){
-                Name = model.Name,
-                Url = model.Url,
-                ImageUrl = model.ImageUrl,
-                Price = (double)model.Price,
-                Description = model.Description
+                var entity = new Product()
+                {
+                    Name = model.Name,
+                    Url = model.Url,
+                    ImageUrl = model.ImageUrl,
+                    Price = (double)model.Price,
+                    Description = model.Description
+                };
 
-            };
-
-            _productService.Create(entity);
-
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} added!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-            
-            return RedirectToAction("ProductList");
-                
+                if (_productService.Create(entity))
+                {
+                    CreateMessage("Record added!","success");
+                    return RedirectToAction("ProductList");
+                }           
+                CreateMessage(_productService.ErrorMessage,"danger");    
+                return View(model);
             }
-
             return View(model);
         }
         
@@ -120,16 +114,14 @@ namespace ShopApp.WebUI.Controllers
                 entity.IsApproved = model.IsApproved;
                 entity.IsHome = model.IsHome;
 
-                _productService.Update(entity, categoryIds);
-                
-                var info = new AlertMessage(){
-                    Message = $"{entity.Name} updated!",
-                    AlertType = "success"
-                };
-
-                TempData["message"] = JsonConvert.SerializeObject(info);
-
-                return RedirectToAction("ProductList");
+                if (_productService.Update(entity, categoryIds))
+                {
+                    CreateMessage("Record updated!","success");
+                    return RedirectToAction("ProductList");
+                }
+                ViewBag.Categories = _categoryService.GetAll();
+                CreateMessage(_productService.ErrorMessage,"danger");
+                return View(model);
             }
             ViewBag.Categories = _categoryService.GetAll();
             return View(model);
@@ -259,8 +251,17 @@ namespace ShopApp.WebUI.Controllers
             _categoryService.DeleteFromCategory(productId,categoryId);
             return Redirect("/admin/categories/"+categoryId);
         }
-        
 
+        private void CreateMessage(string message,string alerttype)
+        {
+            var info = new AlertMessage()
+            {
+                Message = message,
+                AlertType = alerttype
+            };
+
+            TempData["message"] = JsonConvert.SerializeObject(info);
+        }
     }
 
     
