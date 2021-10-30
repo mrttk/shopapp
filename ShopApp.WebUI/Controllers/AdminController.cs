@@ -212,16 +212,13 @@ namespace ShopApp.WebUI.Controllers
                 entity.Name = model.Name;
                 entity.Url = model.Url;
 
-                _categoryService.Update(entity);
-                
-                var info = new AlertMessage(){
-                    Message = $"{entity.Name} updated!",
-                    AlertType = "success"
-                };
-
-                TempData["message"] = JsonConvert.SerializeObject(info);
-
-                return RedirectToAction("CategoryList");                
+                if (_categoryService.Update(entity))
+                {
+                        CreateMessage("Category updated!","success");
+                        return RedirectToAction("CategoryList");     
+                }
+                CreateMessage(_categoryService.ErrorMessage,"danger");
+                return View(model);
             }
             return View(model);
         }
