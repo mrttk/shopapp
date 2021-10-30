@@ -1,5 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Business.Abstract;
@@ -40,7 +43,7 @@ namespace ShopApp.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProductCreate(ProductModel model)
+        public async Task<IActionResult> ProductCreate(ProductModel model, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -48,10 +51,22 @@ namespace ShopApp.WebUI.Controllers
                 {
                     Name = model.Name,
                     Url = model.Url,
-                    ImageUrl = model.ImageUrl,
                     Price = (double)model.Price,
                     Description = model.Description
                 };
+
+                if (file != null)
+                {
+                    var extention = Path.GetExtension(file.FileName);
+                    var fileName = string.Format($"{entity.Name}-{DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss")}{extention}");
+                    entity.ImageUrl = fileName;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\images",fileName);
+
+                    using (var stream = new FileStream(path,FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
 
                 if (_productService.Create(entity))
                 {
@@ -97,7 +112,7 @@ namespace ShopApp.WebUI.Controllers
         }
         
         [HttpPost]
-        public IActionResult ProductEdit(ProductModel model, int[] categoryIds)
+        public async Task<IActionResult> ProductEdit(ProductModel model, int[] categoryIds,IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -110,9 +125,21 @@ namespace ShopApp.WebUI.Controllers
                 entity.Url = model.Url;
                 entity.Price = (double)model.Price;
                 entity.Description = model.Description;
-                entity.ImageUrl = model.ImageUrl;
                 entity.IsApproved = model.IsApproved;
                 entity.IsHome = model.IsHome;
+
+                if (file!=null)
+                {
+                    var extention = Path.GetExtension(file.FileName);
+                    var randomName = string.Format($"{entity.Name}-{DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss")}{extention}");
+                    entity.ImageUrl = randomName;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\images",randomName);
+
+                    using (var stream = new FileStream(path,FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
 
                 if (_productService.Update(entity, categoryIds))
                 {

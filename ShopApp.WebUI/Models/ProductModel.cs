@@ -21,7 +21,6 @@ namespace ShopApp.WebUI.Models
         [StringLength(500,MinimumLength =5)]
         public string Description { get; set; }
 
-        [Required]
         public string ImageUrl { get; set; }
 
         public bool IsApproved { get; set; }

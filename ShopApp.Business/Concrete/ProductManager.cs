@@ -77,6 +77,11 @@ namespace ShopApp.Business.Concrete
         {
             if (Validation(entity))
             {
+                if (categoryIds.Length == 0)
+                {
+                    ErrorMessage = "You must select at least a category for the product";
+                    return false;
+                }
                 _productRepository.Update(entity,categoryIds);
                 return true;
             }
