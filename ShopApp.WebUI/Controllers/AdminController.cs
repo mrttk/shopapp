@@ -162,16 +162,14 @@ namespace ShopApp.WebUI.Controllers
                     Url = model.Url
                 };
 
-                _categoryService.Create(entity);
-
-                var info = new AlertMessage(){
-                    Message = $"{entity.Name} added!",
-                    AlertType = "success"
-                };
-
-                TempData["message"] = JsonConvert.SerializeObject(info);
+                if (_categoryService.Create(entity))
+                {
+                    CreateMessage("Category created!","success");
+                    return RedirectToAction("CategoryList");
+                }
+                CreateMessage(_categoryService.ErrorMessage,"danger");
+                return View(model);
                 
-                return RedirectToAction("CategoryList");
             }
             return View(model);
         }

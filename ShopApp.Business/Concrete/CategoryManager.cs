@@ -12,10 +12,16 @@ namespace ShopApp.Business.Concrete
         public CategoryManager(ICategoryRepository categoryRepository)
         {
             this._categoryRepository = categoryRepository;
-        }        
-        public void Create(Category entity)
+        }
+
+        public bool Create(Category entity)
         {
-            _categoryRepository.Create(entity);
+            if (Validation(entity))
+            {
+                _categoryRepository.Create(entity);
+                return true;
+            }
+            return false;
         }
 
         public void Delete(Category entity)
@@ -43,9 +49,45 @@ namespace ShopApp.Business.Concrete
             return _categoryRepository.GetByIdWithProducts(categoryId);
         }
 
-        public void Update(Category entity)
+        public bool Update(Category entity)
         {
-            _categoryRepository.Update(entity);
+            if (Validation(entity))
+            {
+                _categoryRepository.Update(entity);
+                return true;                
+            }
+            return false;
+        }
+
+        public string ErrorMessage { get; set; }
+        public bool Validation(Category entity)
+        {
+            var isValid = true;
+            
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                ErrorMessage += "Category name is required.\n";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(entity.Name) || entity.Name.Length < 2 || entity.Name.Length > 50)
+            {
+                ErrorMessage += "The category name must be a string with a minimum length of 2 and a maximum length of 50.\n";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(entity.Url))
+            {
+                ErrorMessage += "Category url is required.\n";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(entity.Url) || entity.Url.Length < 2 || entity.Url.Length > 50)
+            {
+                ErrorMessage += "The category url must be a string with a minimum length of 2 and a maximum length of 50.\n";
+                isValid = false;
+            }            
+            return isValid;
         }
     }
 }
