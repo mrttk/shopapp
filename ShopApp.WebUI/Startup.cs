@@ -32,7 +32,7 @@ namespace ShopApp.WebUI
             services.Configure<IdentityOptions>(options=> {
                 //password
                 options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = true;
+                options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
@@ -88,6 +88,8 @@ namespace ShopApp.WebUI
             app.UseAuthentication();
 
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
