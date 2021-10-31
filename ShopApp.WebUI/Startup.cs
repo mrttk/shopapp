@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +15,7 @@ using ShopApp.Business.Abstract;
 using ShopApp.Business.Concrete;
 using ShopApp.DataAccess.Abstract;
 using ShopApp.DataAccess.Concrete.EFCore;
+using ShopApp.WebUI.Identity;
 
 namespace ShopApp.WebUI
 {
@@ -22,6 +25,10 @@ namespace ShopApp.WebUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationContext>(options=> options.UseSqlite("Data Source=shopDb"));
+
+            services.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
             
             services.AddScoped<IProductRepository, EFCoreProductRepository>();
@@ -47,6 +54,8 @@ namespace ShopApp.WebUI
                 SeedDatabase.Seed();
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseRouting();
 
