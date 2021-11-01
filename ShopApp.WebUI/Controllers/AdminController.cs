@@ -1,3 +1,9 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Business.Abstract;
@@ -6,6 +12,7 @@ using ShopApp.WebUI.Models;
 
 namespace ShopApp.WebUI.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private IProductService _productService;
@@ -34,32 +41,44 @@ namespace ShopApp.WebUI.Controllers
         [HttpGet]
         public IActionResult ProductCreate()
         {
-
             return View();
         }
 
         [HttpPost]
-        public IActionResult ProductCreate(ProductModel model)
+        public async Task<IActionResult> ProductCreate(ProductModel model, IFormFile file)
         {
-            var entity = new Product(){
-                Name = model.Name,
-                Url = model.Url,
-                ImageUrl = model.ImageUrl,
-                Price = (double)model.Price,
-                Description = model.Description
+            if (ModelState.IsValid)
+            {
+                var entity = new Product()
+                {
+                    Name = model.Name,
+                    Url = model.Url,
+                    Price = (double)model.Price,
+                    Description = model.Description
+                };
 
-            };
+                if (file != null)
+                {
+                    var extention = Path.GetExtension(file.FileName);
+                    var fileName = string.Format($"{entity.Name}-{DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss")}{extention}");
+                    entity.ImageUrl = fileName;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\images",fileName);
 
-            _productService.Create(entity);
+                    using (var stream = new FileStream(path,FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
 
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} added!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-            
-            return RedirectToAction("ProductList");
+                if (_productService.Create(entity))
+                {
+                    CreateMessage("Record added!","success");
+                    return RedirectToAction("ProductList");
+                }           
+                CreateMessage(_productService.ErrorMessage,"danger");    
+                return View(model);
+            }
+            return View(model);
         }
         
 
@@ -71,7 +90,7 @@ namespace ShopApp.WebUI.Controllers
                 return NotFound();
             }
 
-            var entity = _productService.GetById((int)id);
+            var entity = _productService.GetByIdWithCategories((int)id);
 
             if (entity == null)
             {
@@ -84,35 +103,57 @@ namespace ShopApp.WebUI.Controllers
                 Url = entity.Url,
                 Price = entity.Price,
                 ImageUrl = entity.ImageUrl,
-                Description = entity.Description
+                Description = entity.Description,
+                IsApproved = entity.IsApproved,
+                IsHome = entity.IsHome,
+                SelectedCategories = entity.ProductCategories.Select(i=>i.Category).ToList()
             };
+
+            ViewBag.Categories = _categoryService.GetAll();
             return View(model);
         }
         
         [HttpPost]
-        public IActionResult ProductEdit(ProductModel model)
+        public async Task<IActionResult> ProductEdit(ProductModel model, int[] categoryIds,IFormFile file)
         {
-            var entity = _productService.GetById(model.ProductId);
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _productService.GetById(model.ProductId);
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                entity.Name = model.Name;
+                entity.Url = model.Url;
+                entity.Price = (double)model.Price;
+                entity.Description = model.Description;
+                entity.IsApproved = model.IsApproved;
+                entity.IsHome = model.IsHome;
+
+                if (file!=null)
+                {
+                    var extention = Path.GetExtension(file.FileName);
+                    var randomName = string.Format($"{entity.Name}-{DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss")}{extention}");
+                    entity.ImageUrl = randomName;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\images",randomName);
+
+                    using (var stream = new FileStream(path,FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+
+                if (_productService.Update(entity, categoryIds))
+                {
+                    CreateMessage("Record updated!","success");
+                    return RedirectToAction("ProductList");
+                }
+                ViewBag.Categories = _categoryService.GetAll();
+                CreateMessage(_productService.ErrorMessage,"danger");
+                return View(model);
             }
-            entity.Name = model.Name;
-            entity.Url = model.Url;
-            entity.Price = (double)model.Price;
-            entity.Description = model.Description;
-            entity.ImageUrl = model.ImageUrl;
-
-            _productService.Update(entity);
-            
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} updated!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-
-            return RedirectToAction("ProductList");
+            ViewBag.Categories = _categoryService.GetAll();
+            return View(model);
         }
 
         public IActionResult ProductDelete(int productId)
@@ -143,21 +184,23 @@ namespace ShopApp.WebUI.Controllers
         [HttpPost]
         public IActionResult CategoryCreate(CategoryModel model)
         {
-            var entity = new Category(){
-                Name = model.Name,
-                Url = model.Url
-            };
+            if (ModelState.IsValid)
+            {                
+                var entity = new Category(){
+                    Name = model.Name,
+                    Url = model.Url
+                };
 
-            _categoryService.Create(entity);
-
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} added!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-            
-            return RedirectToAction("CategoryList");
+                if (_categoryService.Create(entity))
+                {
+                    CreateMessage("Category created!","success");
+                    return RedirectToAction("CategoryList");
+                }
+                CreateMessage(_categoryService.ErrorMessage,"danger");
+                return View(model);
+                
+            }
+            return View(model);
         }
         
 
@@ -169,7 +212,7 @@ namespace ShopApp.WebUI.Controllers
                 return NotFound();
             }
 
-            var entity = _categoryService.GetById((int)id);
+            var entity = _categoryService.GetByIdWithProducts((int)id);
 
             if (entity == null)
             {
@@ -179,7 +222,8 @@ namespace ShopApp.WebUI.Controllers
             var model = new CategoryModel(){
                 CategoryId = entity.CategoryId,
                 Name = entity.Name,
-                Url = entity.Url
+                Url = entity.Url,
+                Products = entity.ProductCategories.Select(p=>p.Product).ToList()
             };
             return View(model);
         }
@@ -187,24 +231,25 @@ namespace ShopApp.WebUI.Controllers
         [HttpPost]
         public IActionResult CategoryEdit(CategoryModel model)
         {
-            var entity = _categoryService.GetById(model.CategoryId);
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _categoryService.GetById(model.CategoryId);
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                entity.Name = model.Name;
+                entity.Url = model.Url;
+
+                if (_categoryService.Update(entity))
+                {
+                        CreateMessage("Category updated!","success");
+                        return RedirectToAction("CategoryList");     
+                }
+                CreateMessage(_categoryService.ErrorMessage,"danger");
+                return View(model);
             }
-            entity.Name = model.Name;
-            entity.Url = model.Url;
-
-            _categoryService.Update(entity);
-            
-            var info = new AlertMessage(){
-                Message = $"{entity.Name} updated!",
-                AlertType = "success"
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
-
-            return RedirectToAction("CategoryList");
+            return View(model);
         }
 
         public IActionResult DeleteCategory(int categoryId)
@@ -225,6 +270,22 @@ namespace ShopApp.WebUI.Controllers
             return RedirectToAction("CategoryList");
         }
 
+        public IActionResult DeleteFromCategory(int productId,int categoryId)
+        {
+            _categoryService.DeleteFromCategory(productId,categoryId);
+            return Redirect("/admin/categories/"+categoryId);
+        }
+
+        private void CreateMessage(string message,string alerttype)
+        {
+            var info = new AlertMessage()
+            {
+                Message = message,
+                AlertType = alerttype
+            };
+
+            TempData["message"] = JsonConvert.SerializeObject(info);
+        }
     }
 
     
