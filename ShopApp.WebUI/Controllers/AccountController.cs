@@ -136,5 +136,68 @@ namespace ShopApp.WebUI.Controllers
 
             TempData["message"] = JsonConvert.SerializeObject(info);
         }
+
+        public async Task<IActionResult> ForgotPassword(string Email)
+        {
+            if (string.IsNullOrEmpty(Email))
+            {
+                return View();
+            }
+
+            var user = await _userManager.FindByEmailAsync(Email);
+
+            if (user == null)
+            {
+                return View();
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var url = Url.Action("ResetPassword", "Account", new {
+                userId = user.Id,
+                token = code
+            });
+            
+            await _emailSender.SendEmailAsync(Email,"Reset Password",$"<a href='http://localhost:5000{url}'>Click</a> on the link to reset your password.");
+
+            return View();
+        }
+        
+        public IActionResult ResetPassword(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("Home","Index");
+            }
+
+            var model = new ResetPasswordModel { Token = token };
+
+            return View();            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return RedirectToAction("Home", "Index");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user,model.Token,model.Password);
+
+            if (result.Succeeded)
+            {
+                RedirectToAction("Login", "Account");
+            }
+
+            return View(model);
+        }
     }
 }
