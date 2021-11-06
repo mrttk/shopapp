@@ -15,14 +15,8 @@
         <div class="container py-3">            
             @if (TempData["message"]!=null)
             {
-                var info = JsonConvert.DeserializeObject<AlertMessage>(TempData["message"] as String);
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-@info.AlertType">
-                            @info.Message
-                        </div>
-                    </div>
-                </div>
+                <partial name="_resultMessage" model = "@(TempData.Get<AlertMessage>("message"))"/>
+                
             }
 
             @if (IsSectionDefined("Categories"))
