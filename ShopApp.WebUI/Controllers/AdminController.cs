@@ -4,24 +4,57 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Business.Abstract;
 using ShopApp.Entity;
 using ShopApp.WebUI.Extensions;
+using ShopApp.WebUI.Identity;
 using ShopApp.WebUI.Models;
 
 namespace ShopApp.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize]//(Roles = "Admin")
     public class AdminController : Controller
     {
         private IProductService _productService;
         private ICategoryService _categoryService;
-        public AdminController(IProductService productService, ICategoryService categoryService)
+
+        private RoleManager<IdentityRole> _roleManager;
+        private UserManager<User> _userManager;
+        public AdminController(IProductService productService, ICategoryService categoryService, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             this._productService = productService;
             this._categoryService = categoryService;
+            this._roleManager = roleManager;
+        }
+
+        public IActionResult RoleList()
+        {
+            return View(_roleManager.Roles);
+        }
+
+        public IActionResult RoleCreate()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> RoleCreate(RoleModel model)
+        {
+            var result = await _roleManager.CreateAsync(new IdentityRole(model.Name));
+            if (result.Succeeded)
+            {
+                return RedirectToAction("RoleList");
+            }
+            else   
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View(model);
         }
 
         public IActionResult ProductList()
