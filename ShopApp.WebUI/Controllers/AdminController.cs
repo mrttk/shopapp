@@ -409,6 +409,11 @@ namespace ShopApp.WebUI.Controllers
             return Redirect("/admin/categories/"+categoryId);
         }
 
+        public IActionResult UserList()
+        {
+            return View(_userManager.Users);
+        }
+
     }
 
     
