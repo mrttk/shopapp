@@ -123,6 +123,11 @@ namespace ShopApp.WebUI
                     defaults: new {controller="Admin", action="RoleCreate"}
                 );
                 endpoints.MapControllerRoute(
+                    name:"adminroleedit",
+                    pattern:"admin/role/{id?}",
+                    defaults: new {controller="Admin", action="RoleEdit"}
+                );
+                endpoints.MapControllerRoute(
                     name:"adminproducts",
                     pattern:"admin/products",
                     defaults: new {controller="Admin", action="ProductList"}
