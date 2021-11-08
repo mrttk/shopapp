@@ -13,12 +13,18 @@
                     <li class="nav-item">
                         <a href="" class="nav-link">Orders</a>
                     </li>
+                    @if (User.IsInRole("Admin"))
+                    {
                     <li class="nav-item">
                         <a asp-controller="admin" asp-action="productlist" class="nav-link">Admin Products</a>
                     </li> 
                     <li class="nav-item">
                         <a asp-controller="admin" asp-action="categorylist" class="nav-link">Admin Categories</a>
-                    </li> 
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="admin" asp-action="rolelist" class="nav-link">Admin Roles</a>
+                    </li>
+                    }                    
                 }
             </ul>
             <ul class="navbar-nav ml-auto">

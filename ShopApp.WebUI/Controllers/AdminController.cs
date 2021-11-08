@@ -16,7 +16,7 @@ using ShopApp.WebUI.Models;
 
 namespace ShopApp.WebUI.Controllers
 {
-    [Authorize]//(Roles = "Admin")
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private IProductService _productService;
