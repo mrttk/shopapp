@@ -1,12 +1,13 @@
 @model IEnumerable<User>
 @section Css
 {
-    <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
 }
 
 <h1 class="h3">User List</h1>
 <hr>
 <a href="/admin/role/create" class="btn btn-primary btn-sm mb-3" >Create User</a>
+<hr>
 <table id="myTable" class="table table-striped mt-3">
     <thead>
         <tr>
@@ -48,6 +49,7 @@
 @section Scripts
 {
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready( function () {
         $('#myTable').DataTable();
