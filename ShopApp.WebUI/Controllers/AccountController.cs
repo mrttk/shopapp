@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.WebUI.EmailServices;
+using ShopApp.WebUI.Extensions;
 using ShopApp.WebUI.Identity;
 using ShopApp.WebUI.Models;
 
@@ -109,7 +110,11 @@ namespace ShopApp.WebUI.Controllers
         {
             if (userId == null || token == null)
             {
-                CreateMessage("Invalid token","danger");
+                TempData.Put("message", new AlertMessage(){
+                    Title = "Invalid Token",
+                    Message = "Invalid token!",
+                    AlertType = "danger"
+                });
                 return View();
             }
             var user = await _userManager.FindByIdAsync(userId);
@@ -118,23 +123,20 @@ namespace ShopApp.WebUI.Controllers
                 var result = await _userManager.ConfirmEmailAsync(user,token);
                 if (result.Succeeded)
                 {
-                    CreateMessage("The user has been confirmed!","success");
+                    TempData.Put("message", new AlertMessage(){
+                        Title = "Confirm Message",
+                        Message = "The user has been confirmed!",
+                        AlertType = "success"
+                    });
                     return View();
                 }            
             }
-            CreateMessage("The user is not registered.","warning");
+            TempData.Put("message", new AlertMessage(){
+                        Title = "Register Message",
+                        Message = "The user is not registered.",
+                        AlertType = "warning"
+                    });
             return View();
-        }
-
-        private void CreateMessage(string message,string alerttype)
-        {
-            var info = new AlertMessage()
-            {
-                Message = message,
-                AlertType = alerttype
-            };
-
-            TempData["message"] = JsonConvert.SerializeObject(info);
         }
 
         public async Task<IActionResult> ForgotPassword(string Email)
