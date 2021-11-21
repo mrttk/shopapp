@@ -16,10 +16,18 @@ namespace ShopApp.Entity
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Note { get; set; }
+        public string PaymentId { get; set; }
+        public string ConversationId { get; set; }
+        public EnumPaymentType PaymentType { get; set; }
         public EnumOrderState OrderState { get; set; }
         public List<OrderItem> OrderItems { get; set; }
     }
 
+    public enum EnumPaymentType
+    {
+        CreditCard = 0,
+        EFT = 1
+    }
     public enum EnumOrderState
     {
         waiting = 0,
