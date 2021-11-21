@@ -3,18 +3,19 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+    <PackageReference Include="Iyzipay" Version="2.1.39"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ShopApp.DataAccess\ShopApp.DataAccess.csproj" />
-    <ProjectReference Include="..\ShopApp.Entity\ShopApp.Entity.csproj" />
-    <ProjectReference Include="..\ShopApp.Business\ShopApp.Business.csproj" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
+    <ProjectReference Include="..\ShopApp.DataAccess\ShopApp.DataAccess.csproj"/>
+    <ProjectReference Include="..\ShopApp.Entity\ShopApp.Entity.csproj"/>
+    <ProjectReference Include="..\ShopApp.Business\ShopApp.Business.csproj"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10"/>
   </ItemGroup>
 </Project>
