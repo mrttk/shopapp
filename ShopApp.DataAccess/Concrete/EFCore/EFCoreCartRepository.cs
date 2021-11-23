@@ -7,6 +7,15 @@ namespace ShopApp.DataAccess.Concrete.EFCore
 {
     public class EFCoreCartRepository : EFCoreGenericRepository<Cart, ShopContext>, ICartRepository
     {
+        public void ClearCart(int cartId)
+        {
+            using (var context  = new ShopContext())
+            {
+                var command = @"delete from CartItems where CartId=@p0";
+                context.Database.ExecuteSqlRaw(command, cartId);
+            }
+        }
+
         public void DeleteFromCart(int cartId, int productId)
         {
             using (var context  = new ShopContext())

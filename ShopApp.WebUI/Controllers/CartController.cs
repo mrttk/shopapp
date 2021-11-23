@@ -110,13 +110,13 @@ namespace ShopApp.WebUI.Controllers
                 if (payment.Status == "success")
                 {
                     SaveOrder(model, payment, userId);
-                    ClearCart(userId);
+                    ClearCart(model.CartModel.CartId);
                     return View("Success");
                 }
                 else
                 {
                     TempData.Put("message", new AlertMessage(){
-                    Title = "Delete Message",
+                    Title = "Error Message",
                     Message = $"{payment.ErrorMessage}",
                     AlertType = "danger"
                     });
@@ -126,9 +126,9 @@ namespace ShopApp.WebUI.Controllers
             return View(model);
         }
 
-        private void ClearCart(string userId)
+        private void ClearCart(int cartId)
         {
-            Console.WriteLine("ClearCart method doest work!");
+            _cartService.ClearCart(cartId);
         }
 
         private void SaveOrder(OrderModel model, Payment payment, string userId)
@@ -170,17 +170,15 @@ namespace ShopApp.WebUI.Controllers
         private Payment PaymentProcess(OrderModel model)
         {
             Options options = new Options();
-            options.ApiKey = "enter your api key here";
+            options.ApiKey = "enter your api-key here";
             options.SecretKey = "enter your secret key here";
             options.BaseUrl = "https://sandbox-api.iyzipay.com";
                     
             CreatePaymentRequest request = new CreatePaymentRequest();
             request.Locale = Locale.TR.ToString();
             request.ConversationId = new Random().Next(111111111,999999999).ToString();
-            request.Price = "1.0";
-            // request.Price = model.CartModel.TotalPrice().ToString();
-            // request.PaidPrice = model.CartModel.TotalPrice().ToString();
-            request.PaidPrice = "1,0";
+            request.Price = model.CartModel.TotalPrice().ToString();
+            request.PaidPrice = model.CartModel.TotalPrice().ToString();
             request.Currency = Currency.TRY.ToString();
             request.Installment = 1;
             request.BasketId = "B" + new Random().Next(111111,999999).ToString();
@@ -247,5 +245,43 @@ namespace ShopApp.WebUI.Controllers
             return Payment.Create(request, options);
             
         }
+    
+        public IActionResult GetOrders()
+        {
+            var userId = _userManager.GetUserId(User);
+            var orders = _orderService.GetOrders(userId);
+
+            var orderListModel = new List<OrderListModel>();
+            OrderListModel orderModel;
+            foreach (var order in orders)
+            {
+                orderModel = new OrderListModel();
+
+                orderModel.OrderId = order.Id;
+                orderModel.OrderNumber = order.OrderNumber;
+                orderModel.OrderDate = order.OrderDate;
+                orderModel.Phone = order.Phone;
+                orderModel.FirstName = order.FirstName;
+                orderModel.LastName = order.LastName;
+                orderModel.Email = order.Email;
+                orderModel.Address = order.Address;
+                orderModel.City = order.City;
+                orderModel.OrderState = order.OrderState;
+                orderModel.PaymentType = order.PaymentType;
+                
+                orderModel.OrderItems = order.OrderItems.Select(i=> new OrderItemModel(){
+                    OrderItemId = i.Id,
+                    Name = i.Product.Name,
+                    Price = (double) i.Price,
+                    Quantity = i.Quantity,
+                    ImageUrl = i.Product.ImageUrl
+                }).ToList();
+
+                orderListModel.Add(orderModel);
+            }
+
+            return View("Orders", orderListModel);
+        }
+    
     }
 }
