@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ShopApp.Business.Abstract;
 using ShopApp.WebUI.EmailServices;
 using ShopApp.WebUI.Extensions;
 using ShopApp.WebUI.Identity;
@@ -16,11 +17,13 @@ namespace ShopApp.WebUI.Controllers
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private IEmailSender _emailSender; 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,IEmailSender emailSender)
+        private ICartService _cartService;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,IEmailSender emailSender, ICartService cartService)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._emailSender = emailSender;
+            this._cartService = cartService;
         }
         
         public IActionResult Login(string ReturnUrl = null)
@@ -91,9 +94,13 @@ namespace ShopApp.WebUI.Controllers
                     userId = user.Id,
                     token = code
                 });
+
+                // Create Cart
+                _cartService.InitializeCart(user.Id);
+
                 Console.WriteLine(url);
                 //email
-                await _emailSender.SendEmailAsync(model.Email, "Confirm your account", $"Please <a href='http://localhost:5000{url}'>click</a> the link to confirm your email account.");
+                // await _emailSender.SendEmailAsync(model.Email, "Confirm your account", $"Please <a href='http://localhost:5000{url}'>click</a> the link to confirm your email account.");
                 return RedirectToAction("Login","Account");
             }
             ModelState.AddModelError("","An unknown error has occurred. Please try again");
@@ -123,6 +130,7 @@ namespace ShopApp.WebUI.Controllers
                 var result = await _userManager.ConfirmEmailAsync(user,token);
                 if (result.Succeeded)
                 {
+
                     TempData.Put("message", new AlertMessage(){
                         Title = "Confirm Message",
                         Message = "The user has been confirmed!",
