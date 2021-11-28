@@ -38,7 +38,6 @@ namespace ShopApp.DataAccess.Concrete.EFCore
         public override void Update(Cart entity)
         {
             ShopContext.Carts.Update(entity);
-            ShopContext.SaveChanges();
         }
     }
 }

@@ -98,8 +98,6 @@ namespace ShopApp.DataAccess.Concrete.EFCore
                     ProductId = entity.ProductId,
                     CategoryId = cId
                 }).ToList();
-
-                ShopContext.SaveChanges();
             }
         }
     }
