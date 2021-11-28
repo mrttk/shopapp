@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShopApp.DataAccess.Configurations;
 using ShopApp.Entity;
 
 namespace ShopApp.DataAccess.Concrete.EFCore
@@ -22,8 +23,10 @@ namespace ShopApp.DataAccess.Concrete.EFCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProductCategory>()
-            .HasKey(c=> new {c.CategoryId, c.ProductId});
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ShopApp.Entity
@@ -12,6 +13,7 @@ namespace ShopApp.Entity
         public string ImageUrl { get; set; }
         public bool IsApproved { get; set; }
         public bool IsHome { get; set; }
+        public DateTime CreatedDate { get; set; }
         public List<ProductCategory> ProductCategories { get; set; }
     }
 }
