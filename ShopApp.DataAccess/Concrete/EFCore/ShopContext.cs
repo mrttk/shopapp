@@ -27,6 +27,8 @@ namespace ShopApp.DataAccess.Concrete.EFCore
             modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
+
+            modelBuilder.Seed();
         }
     }
 }

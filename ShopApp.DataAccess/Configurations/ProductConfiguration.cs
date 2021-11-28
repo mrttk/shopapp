@@ -10,7 +10,9 @@ namespace ShopApp.DataAccess.Configurations
         {
             builder.HasKey(m=>m.ProductId);
             builder.Property(m=>m.Name).IsRequired().HasMaxLength(100);
-            builder.Property(m=>m.CreatedDate).HasDefaultValueSql("getdate()");
+            // builder.Property(m=>m.CreatedDate).HasDefaultValueSql("getdate()"); //mssql
+            builder.Property(m=>m.CreatedDate).HasDefaultValueSql("date('now')"); //sqlite
+            
         }
     }
 }

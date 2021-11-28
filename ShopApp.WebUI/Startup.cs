@@ -102,7 +102,6 @@ namespace ShopApp.WebUI
             
             if (env.IsDevelopment())
             {
-                SeedDatabase.Seed();
                 app.UseDeveloperExceptionPage();
             }
 
