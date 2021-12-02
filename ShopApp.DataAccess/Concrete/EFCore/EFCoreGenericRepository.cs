@@ -5,51 +5,40 @@ using ShopApp.DataAccess.Abstract;
 
 namespace ShopApp.DataAccess.Concrete.EFCore
 {
-    public class EFCoreGenericRepository<TEntity, TContext> : IRepository<TEntity>
+    public class EFCoreGenericRepository<TEntity> : IRepository<TEntity>
         where TEntity : class
-        where TContext : DbContext, new()
     {
+        protected readonly DbContext context;
+        public EFCoreGenericRepository(DbContext ctx)
+        {
+            context = ctx;
+        }
         public void Create(TEntity entity)
         {
-            using (var context = new TContext())
-            {
-                context.Set<TEntity>().Add(entity);
-                context.SaveChanges();
-            }
+            context.Set<TEntity>().Add(entity);
+            context.SaveChanges();
         }
 
         public void Delete(TEntity entity)
         {
-            using(var context = new TContext())
-            {
-                context.Set<TEntity>().Remove(entity);
-                context.SaveChanges();
-            }
+            context.Set<TEntity>().Remove(entity);
+            context.SaveChanges();
         }
 
         public List<TEntity> GetAll()
         {
-            using(var context = new TContext())
-            {
-                return context.Set<TEntity>().ToList();
-            }
+            return context.Set<TEntity>().ToList();
         }
 
         public TEntity GetById(int id)
         {
-            using(var context = new TContext())
-            {
-                return context.Set<TEntity>().Find(id);
-            }
+            return context.Set<TEntity>().Find(id);
         }
 
         public virtual void Update(TEntity entity)
         {
-            using(var context = new TContext())
-            {
-                context.Entry(entity).State = EntityState.Modified;
-                context.SaveChanges();
-            }
+            context.Entry(entity).State = EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

@@ -6,24 +6,30 @@ using ShopApp.Entity;
 
 namespace ShopApp.DataAccess.Concrete.EFCore
 {
-    public class EFCoreOrderRepository : EFCoreGenericRepository<Order, ShopContext>, IOrderRepository
+    public class EFCoreOrderRepository : EFCoreGenericRepository<Order>, IOrderRepository
     {
+        public EFCoreOrderRepository(ShopContext context) : base(context)
+        {
+            
+        }
+
+        private ShopContext ShopContext
+        {
+            get { return context as ShopContext; }
+        }
         public List<Order> GetOrders(string userId)
         {
-            using (var context = new ShopContext())
+            var orders = ShopContext.Orders
+                                .Include(i=>i.OrderItems)
+                                .ThenInclude(i=>i.Product)
+                                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(userId))
             {
-                var orders = context.Orders
-                                    .Include(i=>i.OrderItems)
-                                    .ThenInclude(i=>i.Product)
-                                    .AsQueryable();
-
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    orders = orders.Where(i=>i.UserId == userId);
-                }
-
-                return orders.ToList();
+                orders = orders.Where(i=>i.UserId == userId);
             }
+
+            return orders.ToList();
         }
     }
 }
