@@ -72,11 +72,8 @@ namespace ShopApp.WebUI
 
             services.AddControllersWithViews();
             
-            services.AddScoped<IProductRepository, EFCoreProductRepository>();
-            services.AddScoped<ICategoryRepository, EFCoreCategoryRepository>();
-            services.AddScoped<ICartRepository, EFCoreCartRepository>();
-            services.AddScoped<IOrderRepository, EFCoreOrderRepository>();
-
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
             services.AddScoped<ICartService, CartManager>();

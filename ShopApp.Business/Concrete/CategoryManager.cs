@@ -8,17 +8,18 @@ namespace ShopApp.Business.Concrete
     public class CategoryManager : ICategoryService
     {
 
-        private ICategoryRepository _categoryRepository;
-        public CategoryManager(ICategoryRepository categoryRepository)
+        private IUnitOfWork _unitofwork;
+        public CategoryManager(IUnitOfWork unitofwork)
         {
-            this._categoryRepository = categoryRepository;
+            this._unitofwork = unitofwork;
         }
 
         public bool Create(Category entity)
         {
             if (Validation(entity))
             {
-                _categoryRepository.Create(entity);
+                _unitofwork.Categories.Create(entity);
+                _unitofwork.Save();
                 return true;
             }
             return false;
@@ -26,34 +27,37 @@ namespace ShopApp.Business.Concrete
 
         public void Delete(Category entity)
         {
-            _categoryRepository.Delete(entity);
+            _unitofwork.Categories.Delete(entity);
+            _unitofwork.Save();
         }
 
         public void DeleteFromCategory(int productId, int categoryId)
         {
-            _categoryRepository.DeleteFromCategory(productId,categoryId);
+            _unitofwork.Categories.DeleteFromCategory(productId,categoryId);
+            _unitofwork.Save();
         }
 
         public List<Category> GetAll()
         {
-            return _categoryRepository.GetAll();
+            return _unitofwork.Categories.GetAll();
         }
 
         public Category GetById(int id)
         {
-            return _categoryRepository.GetById(id);
+            return _unitofwork.Categories.GetById(id);
         }
 
         public Category GetByIdWithProducts(int categoryId)
         {
-            return _categoryRepository.GetByIdWithProducts(categoryId);
+            return _unitofwork.Categories.GetByIdWithProducts(categoryId);
         }
 
         public bool Update(Category entity)
         {
             if (Validation(entity))
             {
-                _categoryRepository.Update(entity);
+                _unitofwork.Categories.Update(entity);
+                _unitofwork.Save();
                 return true;                
             }
             return false;
